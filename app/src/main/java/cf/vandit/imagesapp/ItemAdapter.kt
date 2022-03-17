@@ -16,19 +16,19 @@ class ItemAdapter(var items: List<ItemData>): RecyclerView.Adapter<ItemAdapter.I
     }
 
     override fun onBindViewHolder(holder: ItemAdapter.ItemViewHolder, position: Int) {
-        holder.apply {
-            binding.itemTitle.text = items[position].title
-            binding.itemAddress.text = items[position].address
-            binding.itemDesc.text = items[position].desc
+        holder.binding.apply {
+            itemTitle.text = items[position].title
+            itemAddress.text = items[position].address
+            itemDesc.text = items[position].desc
 
-            Glide.with(binding.itemImageView.context)
+            Glide.with(itemImageView.context)
                 .load(items[position].image)
-                .into(binding.itemImageView)
+                .into(itemImageView)
 
             if(items[position].isFav){
-                binding.itemFavBtn.setImageResource(R.drawable.ic_star_filled)
+                itemFavBtn.setImageResource(R.drawable.ic_star_filled)
             } else {
-                binding.itemFavBtn.setImageResource(R.drawable.ic_star_border)
+                itemFavBtn.setImageResource(R.drawable.ic_star_border)
             }
         }
     }
