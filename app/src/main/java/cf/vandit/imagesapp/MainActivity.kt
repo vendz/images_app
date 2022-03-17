@@ -1,21 +1,24 @@
 package cf.vandit.imagesapp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
-import androidx.recyclerview.widget.*
-import kotlinx.android.synthetic.main.activity_main.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import cf.vandit.imagesapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val actionBar = supportActionBar
 
@@ -32,26 +35,26 @@ class MainActivity : AppCompatActivity() {
             )
 
         val snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(recView)
+        snapHelper.attachToRecyclerView(binding.recView)
         val adapter = ItemAdapter(itemList)
-        recView.adapter = adapter
-        recView.layoutManager = LinearLayoutManager(this)
+        binding.recView.adapter = adapter
+        binding.recView.layoutManager = LinearLayoutManager(this)
 
-        recView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+        binding.recView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                val indexRv = (recView.layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()
+                val indexRv = (binding.recView.layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()
                 if(indexRv!=0){
-                    scrollToTopBtn.visibility = View.VISIBLE
+                    binding.scrollToTopBtn.visibility = View.VISIBLE
                 } else {
-                    scrollToTopBtn.visibility = View.GONE
+                    binding.scrollToTopBtn.visibility = View.GONE
                 }
             }
         })
 
-        scrollToTopBtn.setOnClickListener{
-            recView.smoothScrollToPosition(0)
-            recView.smoothScrollBy(5,0)
+        binding.scrollToTopBtn.setOnClickListener{
+            binding.recView.smoothScrollToPosition(0)
+            binding.recView.smoothScrollBy(5,0)
         }
     }
 
