@@ -21,7 +21,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:orientation="vertical"
-        android:layout_margin="5dp">
+        android:layout_margin="@dimen/margin_8">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,11 +32,10 @@
                 android:id="@+id/item_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="@dimen/margin_5"
                 android:layout_weight="20"
                 android:text="hello world this is vandit and i adsdasds dfdsf"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textAppearance="@style/heading_1"/>
 
             <ImageButton
                 android:id="@+id/item_favBtn"
@@ -45,7 +44,7 @@
                 android:layout_weight="1"
                 android:src="@drawable/ic_star_border"
                 android:background="@android:color/transparent"
-                android:layout_margin="10dp"
+                android:layout_margin="@dimen/margin_10"
                 android:layout_gravity="center"/>
 
         </LinearLayout>
@@ -54,21 +53,21 @@
             android:id="@+id/item_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:text="hello world \n hello \n hi"
-            android:textSize="14sp" />
+            android:layout_marginHorizontal="@dimen/margin_5"
+            android:text="hello world \nhello \nhi"
+            android:textAppearance="@style/address_1" />
 
         <TextView
             android:id="@+id/item_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginHorizontal="@dimen/margin_5"
+            android:layout_marginTop="@dimen/margin_3"
+            android:layout_marginBottom="@dimen/margin_5"
             android:text="hello world this is vandit and i adsdasds dfdsf sdfsdf sdf sdf sd fs df sdfsdfsdfsdf sdf sd fsd fsdfsdfs dfs fs dfs fsfsfsdf sdfsdfsf dfsfsfdsf sdfsfsf sfdsfsf fs fdsfsfsdfs fsfsfdfsfsdfdsf fsdfsf"
-            android:textSize="16sp"
-            android:maxLines="3"
-            android:ellipsize="end" />
+            android:textAppearance="@style/desc_1"
+            android:ellipsize="end"
+            android:maxLines="3"/>
 
     </LinearLayout>
 

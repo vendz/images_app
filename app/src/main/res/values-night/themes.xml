@@ -13,4 +13,17 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="heading_1" parent="TextAppearance.MaterialComponents.Headline1">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="address_1" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="desc_1" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textSize">16sp</item>
+    </style>
 </resources>
