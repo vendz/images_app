@@ -64,9 +64,15 @@ class MainActivity : AppCompatActivity() {
             binding.recView.smoothScrollToPosition(0)
             binding.recView.smoothScrollBy(5,0)
         }
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            getImages()
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     private fun getImages() {
+        imageList.clear()
         val images = RetrofitService.api.getImages()
         images.enqueue(object: Callback<List<ImageData>>{
             override fun onResponse(
@@ -78,6 +84,7 @@ class MainActivity : AppCompatActivity() {
                     imageList.addAll(responseBody)
                 }
                 binding.recView.adapter!!.notifyDataSetChanged()
+                binding.progressBar.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<List<ImageData>>, t: Throwable) {
