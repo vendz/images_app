@@ -1,6 +1,7 @@
 package cf.vandit.imagesapp
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -10,10 +11,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import cf.vandit.imagesapp.databinding.ActivityMainBinding
+import cf.vandit.imagesapp.network.ImageData
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val imageList = mutableListOf<ImageData>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         // here "!!" before title is a null safety check
         actionBar!!.title = "Home"
+        getImages()
 
         var itemList = mutableListOf(
             ItemData("Hey This is Vandit", "hello world \nhello \nhi", "A demo is what you give to show how something works. You might give a demo of your fancy new espresso machine to your weekend guests, so they'll know how to use it. Demo", false, "https://snov.io/glossary/wp-content/uploads/2020/04/Screenshot-6.png"),
@@ -36,9 +43,10 @@ class MainActivity : AppCompatActivity() {
 
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(binding.recView)
-        val adapter = ItemAdapter(itemList)
+        val adapter = ItemAdapter(imageList)
         binding.recView.adapter = adapter
         binding.recView.layoutManager = LinearLayoutManager(this)
+        Log.d("TAG", "onCreate: ")
 
         binding.recView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -56,6 +64,26 @@ class MainActivity : AppCompatActivity() {
             binding.recView.smoothScrollToPosition(0)
             binding.recView.smoothScrollBy(5,0)
         }
+    }
+
+    private fun getImages() {
+        val images = RetrofitService.api.getImages()
+        images.enqueue(object: Callback<List<ImageData>>{
+            override fun onResponse(
+                call: Call<List<ImageData>>,
+                response: Response<List<ImageData>>
+            ) {
+                val responseBody = response.body()
+                if (responseBody != null) {
+                    imageList.addAll(responseBody)
+                }
+                binding.recView.adapter!!.notifyDataSetChanged()
+            }
+
+            override fun onFailure(call: Call<List<ImageData>>, t: Throwable) {
+                Log.d("TAG", t.stackTraceToString())
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

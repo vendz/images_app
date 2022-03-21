@@ -32,10 +32,11 @@
                 android:id="@+id/item_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_5"
+                android:layout_marginHorizontal="@dimen/margin_5"
                 android:layout_weight="20"
-                android:text="hello world this is vandit and i adsdasds dfdsf"
-                android:textAppearance="@style/heading_1"/>
+                android:text="hello world"
+                android:textAppearance="@style/heading_1"
+                android:layout_gravity="center"/>
 
             <ImageButton
                 android:id="@+id/item_favBtn"
@@ -54,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_5"
-            android:text="hello world \nhello \nhi"
+            android:text="hello world"
             android:textAppearance="@style/address_1" />
 
         <TextView
@@ -64,10 +65,10 @@
             android:layout_marginHorizontal="@dimen/margin_5"
             android:layout_marginTop="@dimen/margin_3"
             android:layout_marginBottom="@dimen/margin_5"
-            android:text="hello world this is vandit and i adsdasds dfdsf sdfsdf sdf sdf sd fs df sdfsdfsdfsdf sdf sd fsd fsdfsdfs dfs fs dfs fsfsfsdf sdfsdfsf dfsfsfdsf sdfsfsf sfdsfsf fs fdsfsfsdfs fsfsfdfsfsdfdsf fsdfsf"
-            android:textAppearance="@style/desc_1"
             android:ellipsize="end"
-            android:maxLines="3"/>
+            android:maxLines="3"
+            android:text="hello world this is vandit and i adsdasds dfdsf sdfsdf sdf sdf sd fs df sdfsdfsdfsdf sdf sd fsd fsdfsdfs dfs fs dfs fsfsfsdf sdfsdfsf dfsfsfdsf sdfsfsf sfdsfsf fs fdsfsfsdfs fsfsfdfsfsdfdsf fsdfsf"
+            android:textAppearance="@style/desc_1" />
 
     </LinearLayout>
 

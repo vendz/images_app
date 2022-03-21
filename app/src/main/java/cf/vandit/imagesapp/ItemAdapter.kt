@@ -1,12 +1,14 @@
 package cf.vandit.imagesapp
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import cf.vandit.imagesapp.databinding.ItemViewBinding
+import cf.vandit.imagesapp.network.ImageData
 import com.bumptech.glide.Glide
 
-class ItemAdapter(var items: List<ItemData>): RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+class ItemAdapter(var items: List<ImageData>): RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
     inner class ItemViewHolder(val binding: ItemViewBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -17,15 +19,15 @@ class ItemAdapter(var items: List<ItemData>): RecyclerView.Adapter<ItemAdapter.I
 
     override fun onBindViewHolder(holder: ItemAdapter.ItemViewHolder, position: Int) {
         holder.binding.apply {
-            itemTitle.text = items[position].title
-            itemAddress.text = items[position].address
-            itemDesc.text = items[position].desc
+            itemTitle.text = items[position].user.name
+            itemAddress.text = items[position].user.location
+            itemDesc.text = items[position].user.bio
 
             Glide.with(itemImageView.context)
-                .load(items[position].image)
+                .load(items[position].urls.regular)
                 .into(itemImageView)
 
-            if(items[position].isFav){
+            if(items[position].liked_by_user){
                 itemFavBtn.setImageResource(R.drawable.ic_star_filled)
             } else {
                 itemFavBtn.setImageResource(R.drawable.ic_star_border)
