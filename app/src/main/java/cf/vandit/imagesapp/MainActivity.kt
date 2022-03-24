@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import cf.vandit.imagesapp.databinding.ActivityMainBinding
 import cf.vandit.imagesapp.network.ImageData
 import kotlinx.coroutines.launch
+import java.lang.Exception
+import java.net.UnknownHostException
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,7 +38,6 @@ class MainActivity : AppCompatActivity() {
         val adapter = ItemAdapter(imageList)
         binding.recView.adapter = adapter
         binding.recView.layoutManager = LinearLayoutManager(this)
-        Log.d("TAG", "onCreate: ")
 
         binding.recView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -59,9 +60,17 @@ class MainActivity : AppCompatActivity() {
             getImages()
             binding.swipeRefreshLayout.isRefreshing = false
         }
+
+        binding.errorBtn.setOnClickListener {
+            binding.progressBar.visibility = View.VISIBLE
+            getImages()
+        }
     }
 
     private fun getImages() {
+        binding.errorTextView.visibility = View.GONE
+        binding.errorBtn.visibility = View.GONE
+
         var service: RetrofitService = RetrofitService.create()
 
         lifecycleScope.launch{
@@ -80,8 +89,16 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     Log.d("TAG", response.message())
                 }
-            } catch (e: Exception) {
-                Log.e("TAG", "geImages2 lifecycle ", e)
+            } catch (e: UnknownHostException) {
+                if (imageList.isEmpty()){
+                    binding.progressBar.visibility = View.GONE
+                    binding.errorTextView.visibility = View.VISIBLE
+                    binding.errorBtn.visibility = View.VISIBLE
+                } else {
+                    Log.e("TAG", e.stackTraceToString())
+                }
+            } catch (e: Exception){
+                Log.e("TAG", e.stackTraceToString())
             }
         }
 
