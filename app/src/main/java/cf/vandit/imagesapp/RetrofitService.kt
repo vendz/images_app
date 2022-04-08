@@ -12,7 +12,7 @@ interface RetrofitService {
 //    fun getImages1(@Query("client_id") clientId: String = Constants.clientId): Call<List<ImageData>>
 
     @GET("/photos")
-    suspend fun getImages(@Query("client_id") clientId: String = Constants.clientId): Response<List<ImageData>>
+    suspend fun getImages(@Query("client_id") clientId: String, @Query("page") page: Int): Response<List<ImageData>>
 
     companion object{
         fun create(): RetrofitService {
