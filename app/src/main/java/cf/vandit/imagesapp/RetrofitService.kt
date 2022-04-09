@@ -1,6 +1,7 @@
 package cf.vandit.imagesapp
 import cf.vandit.imagesapp.network.ImageData
-import retrofit2.Call
+import com.localebro.okhttpprofiler.OkHttpProfilerInterceptor
+import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -16,9 +17,17 @@ interface RetrofitService {
 
     companion object{
         fun create(): RetrofitService {
+//            val logger = HttpLoggingInterceptor()
+//            logger.level = HttpLoggingInterceptor.Level.BASIC
+
+            val client = OkHttpClient.Builder()
+                .addInterceptor(OkHttpProfilerInterceptor())
+                .build()
+
             return Retrofit.Builder()
                 .baseUrl(Constants.baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
                 .build()
                 .create(RetrofitService::class.java)
         }

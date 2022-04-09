@@ -68,7 +68,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            imageList.clear()
             currentPage = 1
             getImages()
             binding.swipeRefreshLayout.isRefreshing = false
@@ -96,6 +95,9 @@ class MainActivity : AppCompatActivity() {
             try {
                 val response = service.getImages(Constants.clientId, currentPage)
                 if (response.isSuccessful) {
+                    if(currentPage == 1){
+                        imageList.clear()
+                    }
                     response.body()?.let {
                         val responseBody = response.body()
                         if (responseBody != null) {
