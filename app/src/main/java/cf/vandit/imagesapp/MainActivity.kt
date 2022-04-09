@@ -37,7 +37,8 @@ class MainActivity : AppCompatActivity() {
 
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(binding.recView)
-        val adapter = ItemAdapter(imageList)
+        val adapter = ItemAdapter()
+        adapter.submitList(imageList)
         binding.recView.adapter = adapter
         var layoutManager = LinearLayoutManager(this)
         binding.recView.layoutManager = layoutManager

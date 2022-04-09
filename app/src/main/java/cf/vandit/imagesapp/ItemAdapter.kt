@@ -1,41 +1,52 @@
 package cf.vandit.imagesapp
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import cf.vandit.imagesapp.databinding.ItemViewBinding
 import cf.vandit.imagesapp.network.ImageData
 import com.bumptech.glide.Glide
 
-class ItemAdapter(var items: List<ImageData>): RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
-
-    inner class ItemViewHolder(val binding: ItemViewBinding) : RecyclerView.ViewHolder(binding.root)
+class ItemAdapter: ListAdapter<ImageData, ItemAdapter.ItemViewHolder>(DiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemAdapter.ItemViewHolder {
         val binding = ItemViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ItemAdapter.ItemViewHolder, position: Int) {
-        holder.binding.apply {
-            itemTitle.text = items[position].user.name
-            itemAddress.text = items[position].user.location
-            itemDesc.text = items[position].user.bio
+    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+        val item = getItem(position)
+        holder.bind(item)
+    }
 
-            Glide.with(itemImageView.context)
-                .load(items[position].urls.regular)
-                .into(itemImageView)
+    class DiffUtil : androidx.recyclerview.widget.DiffUtil.ItemCallback<ImageData>(){
+        override fun areItemsTheSame(oldItem: ImageData, newItem: ImageData): Boolean {
+            return oldItem.id == newItem.id
+        }
 
-            if(items[position].liked_by_user){
-                itemFavBtn.setImageResource(R.drawable.ic_star_filled)
-            } else {
-                itemFavBtn.setImageResource(R.drawable.ic_star_border)
-            }
+        override fun areContentsTheSame(oldItem: ImageData, newItem: ImageData): Boolean {
+            return oldItem == newItem
         }
     }
 
-    override fun getItemCount(): Int {
-        return items.size
+    class ItemViewHolder(val binding: ItemViewBinding) : RecyclerView.ViewHolder(binding.root){
+        fun bind(item: ImageData){
+            binding.apply {
+                itemTitle.text = item.user.name
+                itemAddress.text = item.user.location
+                itemDesc.text = item.user.bio
+
+                Glide.with(itemImageView.context)
+                    .load(item.urls.regular)
+                    .into(itemImageView)
+
+                if(item.liked_by_user){
+                    itemFavBtn.setImageResource(R.drawable.ic_star_filled)
+                } else {
+                    itemFavBtn.setImageResource(R.drawable.ic_star_border)
+                }
+            }
+        }
     }
 }
