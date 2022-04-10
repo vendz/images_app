@@ -21,8 +21,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val imageList = mutableListOf<ImageData>()
-    private var currentPage: Int = 1;
-    private var loading: Boolean = true;
+    private var currentPage: Int = 1
+    private var loading: Boolean = true
+    private  val adapter = ItemAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,8 +38,7 @@ class MainActivity : AppCompatActivity() {
 
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(binding.recView)
-        val adapter = ItemAdapter()
-        adapter.submitList(imageList)
+//        adapter.submitList(imageList)
         binding.recView.adapter = adapter
         var layoutManager = LinearLayoutManager(this)
         binding.recView.layoutManager = layoutManager
@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         binding.swipeRefreshLayout.isRefreshing = true;
+        getImages()
     }
 
     private fun getImages() {
@@ -104,13 +105,15 @@ class MainActivity : AppCompatActivity() {
                         if (responseBody != null) {
                             imageList.addAll(responseBody)
                         }
-                        binding.recView.adapter!!.notifyDataSetChanged()
+//                        binding.recView.adapter!!.notifyDataSetChanged()
+                        adapter.submitList(imageList.toMutableList())
 //                        binding.progressBar.visibility = View.GONE
                         binding.swipeRefreshLayout.isRefreshing = false;
                         loading = false
                     }
                 } else {
                     Log.d("TAG", response.message())
+                    Toast.makeText(this@MainActivity, "error loading data...", Toast.LENGTH_LONG).show()
                 }
             } catch (e: UnknownHostException) {
                 if (imageList.isEmpty()){
@@ -120,9 +123,11 @@ class MainActivity : AppCompatActivity() {
                     binding.swipeRefreshLayout.isRefreshing = false;
                 } else {
                     Log.e("TAG", e.stackTraceToString())
+                    Toast.makeText(this@MainActivity, "No Internet Connection", Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception){
                 Log.e("TAG", e.stackTraceToString())
+                Toast.makeText(this@MainActivity, "An Exception Occurred", Toast.LENGTH_LONG).show()
             }
         }
 
