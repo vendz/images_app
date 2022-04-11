@@ -3,6 +3,7 @@ package cf.vandit.imagesapp
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import cf.vandit.imagesapp.databinding.ItemViewBinding
@@ -11,7 +12,7 @@ import com.bumptech.glide.Glide
 
 class ItemAdapter: ListAdapter<ImageData, ItemAdapter.ItemViewHolder>(DiffUtil()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemAdapter.ItemViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding = ItemViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding)
     }
@@ -31,24 +32,17 @@ class ItemAdapter: ListAdapter<ImageData, ItemAdapter.ItemViewHolder>(DiffUtil()
         }
     }
 
-    class ItemViewHolder(val binding: ItemViewBinding) : RecyclerView.ViewHolder(binding.root){
+    class ItemViewHolder(private val binding: ItemViewBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(item: ImageData){
-            binding.apply {
-                itemTitle.text = item.user.name
-                itemAddress.text = item.user.location
-                itemDesc.text = item.user.bio
-
-                Glide.with(itemImageView.context)
-                    .load(item.urls.regular)
-                    .centerCrop()
-                    .into(itemImageView)
-
-                if(item.liked_by_user){
-                    itemFavBtn.setImageResource(R.drawable.ic_star_filled)
-                } else {
-                    itemFavBtn.setImageResource(R.drawable.ic_star_border)
-                }
-            }
+            binding.listItem = item
         }
     }
+}
+
+@BindingAdapter("loadImage")
+fun loadImage(item_imageView: ImageView, url: String){
+    Glide.with(item_imageView)
+        .load(url)
+        .centerCrop()
+        .into(item_imageView)
 }
