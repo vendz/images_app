@@ -6,6 +6,10 @@
         <variable
             name="listItem"
             type="cf.vandit.imagesapp.network.ImageData" />
+
+        <variable
+            name="callback"
+            type="cf.vandit.imagesapp.ItemOnClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -54,7 +58,9 @@
                     android:src="@drawable/ic_star_border"
                     android:background="@android:color/transparent"
                     android:layout_margin="@dimen/margin_10"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    app:setCallback="@{callback}"
+                    app:imageData="@{listItem}"/>
 
             </LinearLayout>
 

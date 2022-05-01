@@ -1,16 +1,25 @@
-package cf.vandit.imagesapp
+package cf.vandit.imagesapp.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import cf.vandit.imagesapp.ItemOnClickListener
 import cf.vandit.imagesapp.databinding.ItemViewBinding
 import cf.vandit.imagesapp.network.ImageData
 import com.bumptech.glide.Glide
 
 class ItemAdapter: ListAdapter<ImageData, ItemAdapter.ItemViewHolder>(DiffUtil()) {
+    private lateinit var callback: ItemOnClickListener
+
+    fun setCallback(callback: ItemOnClickListener){
+        this.callback = callback
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding = ItemViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -19,7 +28,7 @@ class ItemAdapter: ListAdapter<ImageData, ItemAdapter.ItemViewHolder>(DiffUtil()
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item)
+        holder.bind(item, callback)
     }
 
     class DiffUtil : androidx.recyclerview.widget.DiffUtil.ItemCallback<ImageData>(){
@@ -33,8 +42,9 @@ class ItemAdapter: ListAdapter<ImageData, ItemAdapter.ItemViewHolder>(DiffUtil()
     }
 
     class ItemViewHolder(private val binding: ItemViewBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind(item: ImageData){
+        fun bind(item: ImageData, callback: ItemOnClickListener){
             binding.listItem = item
+            binding.callback = callback
         }
     }
 }
@@ -45,4 +55,9 @@ fun loadImage(item_imageView: ImageView, url: String){
         .load(url)
         .centerCrop()
         .into(item_imageView)
+}
+
+@BindingAdapter("setCallback", "imageData")
+fun setCallback(v: ImageButton, callback: ItemOnClickListener, imageData: ImageData){
+    v.setOnClickListener { callback.onClick(imageData, v) }
 }
