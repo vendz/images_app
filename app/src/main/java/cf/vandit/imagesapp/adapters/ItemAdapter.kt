@@ -1,20 +1,24 @@
 package cf.vandit.imagesapp.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import cf.vandit.imagesapp.ItemOnClickListener
+import cf.vandit.imagesapp.R
+import cf.vandit.imagesapp.database.FavouriteDatabase
 import cf.vandit.imagesapp.databinding.ItemViewBinding
 import cf.vandit.imagesapp.network.ImageData
 import com.bumptech.glide.Glide
 
-class ItemAdapter: ListAdapter<ImageData, ItemAdapter.ItemViewHolder>(DiffUtil()) {
+class ItemAdapter(val context: Context): ListAdapter<ImageData, ItemAdapter.ItemViewHolder>(DiffUtil()) {
+    private lateinit var database: RoomDatabase
     private lateinit var callback: ItemOnClickListener
 
     fun setCallback(callback: ItemOnClickListener){
@@ -23,6 +27,7 @@ class ItemAdapter: ListAdapter<ImageData, ItemAdapter.ItemViewHolder>(DiffUtil()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding = ItemViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        database = Room.databaseBuilder(parent.context, FavouriteDatabase::class.java, "favouriteDB").build()
         return ItemViewHolder(binding)
     }
 
@@ -41,10 +46,16 @@ class ItemAdapter: ListAdapter<ImageData, ItemAdapter.ItemViewHolder>(DiffUtil()
         }
     }
 
-    class ItemViewHolder(private val binding: ItemViewBinding) : RecyclerView.ViewHolder(binding.root){
+    inner class ItemViewHolder(private val binding: ItemViewBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(item: ImageData, callback: ItemOnClickListener){
             binding.listItem = item
             binding.callback = callback
+
+            if(item.liked_by_user == true) {
+                binding.itemFavBtn.setImageDrawable(context.getDrawable(R.drawable.ic_star_filled))
+            } else {
+                binding.itemFavBtn.setImageDrawable(context.getDrawable(R.drawable.ic_star_border))
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-package cf.vandit.imagesapp
+package cf.vandit.imagesapp.fragments
 
 import android.os.Bundle
 import android.util.Log
@@ -15,22 +15,28 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
+import androidx.room.RoomDatabase
+import cf.vandit.imagesapp.Constants
+import cf.vandit.imagesapp.ItemOnClickListener
+import cf.vandit.imagesapp.R
+import cf.vandit.imagesapp.RetrofitService
 import cf.vandit.imagesapp.adapters.ItemAdapter
-import cf.vandit.imagesapp.database.Favourite
 import cf.vandit.imagesapp.database.FavouriteDatabase
 import cf.vandit.imagesapp.databinding.FragmentMainBinding
 import cf.vandit.imagesapp.network.ImageData
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 
 class MainFragment: Fragment(), ItemOnClickListener {
     lateinit var binding: FragmentMainBinding
+    lateinit var adapter: ItemAdapter
+    lateinit var database: FavouriteDatabase
 
     private val imageList = mutableListOf<ImageData>()
     private var currentPage: Int = 1
     private var loading: Boolean = true
-    private val adapter = ItemAdapter().also { it.setCallback(this) }
+//    private val adapter = ItemAdapter().also { it.setCallback(this) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,13 +49,18 @@ class MainFragment: Fragment(), ItemOnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         (activity as AppCompatActivity).supportActionBar?.title ="Home"
-        getImages()
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
+        database = Room.databaseBuilder(requireContext(), FavouriteDatabase::class.java, "favouriteDB").build()
+
+        adapter = ItemAdapter(requireContext()).also { it.setCallback(this) }
+//        getImages()
 
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(binding.recView)
 //        adapter.submitList(imageList)
         binding.recView.adapter = adapter
-        var layoutManager = LinearLayoutManager(requireContext())
+        val layoutManager = LinearLayoutManager(requireContext())
         binding.recView.layoutManager = layoutManager
 
         binding.recView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
@@ -106,6 +117,12 @@ class MainFragment: Fragment(), ItemOnClickListener {
                     response.body()?.let {
                         val responseBody = response.body()
                         if (responseBody != null) {
+                            for(res in responseBody){
+                                Log.d("TAG", "getImages: ${res.id}")
+                                if(database.favouriteDao().getImage(res.id) != null){
+                                    res.liked_by_user = true
+                                }
+                            }
                             imageList.addAll(responseBody)
                         }
 //                        binding.recView.adapter!!.notifyDataSetChanged()
@@ -161,11 +178,16 @@ class MainFragment: Fragment(), ItemOnClickListener {
     }
 
     override fun onClick(item: ImageData, v: ImageButton) {
-        val database = Room.databaseBuilder(requireContext(), FavouriteDatabase::class.java, "favouriteDB").build()
-        lifecycleScope.launch {
-            database.favouriteDao().insertImage(Favourite(0, item.urls.regular, item.user.name, item.user.location, item.user.bio, true))
+        lifecycleScope.launch(Dispatchers.Main) {
+            if(database.favouriteDao().getImage(item.id) == null){
+                item.liked_by_user = true
+                database.favouriteDao().insertImage(item)
+                v.setImageDrawable(context?.getDrawable(R.drawable.ic_star_filled))
+            } else {
+                item.liked_by_user = false
+                database.favouriteDao().deleteImage(item)
+                v.setImageDrawable(context?.getDrawable(R.drawable.ic_star_border))
+            }
         }
-
-        v.setImageDrawable(context?.getDrawable(R.drawable.ic_star_filled))
     }
 }
