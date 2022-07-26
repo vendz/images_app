@@ -4,7 +4,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import retrofit2.converter.gson.GsonConverterFactory
 
 @Entity
 data class ImageData(

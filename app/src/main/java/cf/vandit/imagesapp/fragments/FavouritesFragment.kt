@@ -2,7 +2,6 @@ package cf.vandit.imagesapp.fragments
 
 import android.os.Bundle
 import android.os.Handler
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -10,11 +9,13 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import cf.vandit.imagesapp.ItemOnClickListener
 import cf.vandit.imagesapp.R
@@ -23,7 +24,6 @@ import cf.vandit.imagesapp.database.FavouriteDatabase
 import cf.vandit.imagesapp.databinding.FragmentFavouritesBinding
 import cf.vandit.imagesapp.network.ImageData
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.launch
 
 class FavouritesFragment : Fragment(), ItemOnClickListener {
@@ -32,7 +32,7 @@ class FavouritesFragment : Fragment(), ItemOnClickListener {
 
     lateinit var images: List<ImageData>
 //    private val adapter = ItemAdapter(requireContext()).also { it.setCallback(this) }
-    lateinit var adapter: ItemAdapter
+    private lateinit var adapter: ItemAdapter
     private val handler = Handler()
 
 
@@ -57,6 +57,23 @@ class FavouritesFragment : Fragment(), ItemOnClickListener {
 
         val layoutManager = LinearLayoutManager(requireContext())
         binding.favRecView.layoutManager = layoutManager
+
+        binding.favRecView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val indexRv = (binding.favRecView.layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()
+                if(indexRv!=0){
+                    binding.scrollToTopBtn.visibility = View.VISIBLE
+                } else {
+                    binding.scrollToTopBtn.visibility = View.GONE
+                }
+            }
+        })
+
+        binding.scrollToTopBtn.setOnClickListener{
+            binding.favRecView.smoothScrollToPosition(0)
+            binding.favRecView.smoothScrollBy(5,0)
+        }
 
         lifecycleScope.launch(Dispatchers.IO){
             getImages()

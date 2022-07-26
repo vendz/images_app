@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.actionbar_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }

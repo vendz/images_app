@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 32
 
     defaultConfig {
         applicationId "cf.vandit.imagesapp"
@@ -60,8 +60,8 @@ dependencies {
     implementation 'com.localebro:okhttpprofiler:1.0.8'
 
     // Lifecycle
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.0-rc01'
-    kapt 'androidx.lifecycle:lifecycle-compiler:2.5.0-rc01'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.0-alpha01'
+    kapt 'androidx.lifecycle:lifecycle-compiler:2.6.0-alpha01'
 
     // Room
     implementation "androidx.room:room-runtime:2.4.2"
@@ -74,11 +74,11 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1"
 
     // Fragments
-    implementation "androidx.fragment:fragment-ktx:1.4.1"
+    implementation "androidx.fragment:fragment-ktx:1.5.0"
 
     // Navigation
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.2'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.4.2'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.0'
 
     // Lottie
     implementation "com.airbnb.android:lottie:3.4.0"
