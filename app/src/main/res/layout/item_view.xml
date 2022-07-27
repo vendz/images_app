@@ -13,6 +13,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rootView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -33,7 +34,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:orientation="vertical"
-            android:layout_margin="@dimen/margin_8">
+            android:background="#7F000000">
 
             <LinearLayout
                 android:layout_width="match_parent"

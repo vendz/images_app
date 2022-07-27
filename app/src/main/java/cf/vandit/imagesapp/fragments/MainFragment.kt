@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -24,14 +26,20 @@ import cf.vandit.imagesapp.adapters.ItemAdapter
 import cf.vandit.imagesapp.database.FavouriteDatabase
 import cf.vandit.imagesapp.databinding.FragmentMainBinding
 import cf.vandit.imagesapp.network.ImageData
+import cf.vandit.imagesapp.network.Urls
+import cf.vandit.imagesapp.network.User
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 
 class MainFragment: Fragment(), ItemOnClickListener {
     lateinit var binding: FragmentMainBinding
-    lateinit var adapter: ItemAdapter
+    private lateinit var adapter: ItemAdapter
     lateinit var database: FavouriteDatabase
+    lateinit var navController: NavController
+
+    lateinit var lastItem: ImageData
 
     private val imageList = mutableListOf<ImageData>()
     private var currentPage: Int = 1
@@ -50,6 +58,10 @@ class MainFragment: Fragment(), ItemOnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         (activity as AppCompatActivity).supportActionBar?.title ="Home"
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
+        val navHostFragment =
+            activity?.supportFragmentManager?.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
 
         database = Room.databaseBuilder(requireContext(), FavouriteDatabase::class.java, "favouriteDB").build()
 
@@ -183,10 +195,25 @@ class MainFragment: Fragment(), ItemOnClickListener {
                 item.liked_by_user = true
                 database.favouriteDao().insertImage(item)
                 v.setImageDrawable(context?.getDrawable(R.drawable.ic_star_filled))
+                Snackbar.make(requireView(), "${item.user.name} added to favourites", Snackbar.LENGTH_LONG)
+                    .setAction("View Saved"){
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            navController.navigate(R.id.action_mainFragment_to_favouritesFragment)
+                        }
+                    }.show()
             } else {
                 item.liked_by_user = false
                 database.favouriteDao().deleteImage(item)
                 v.setImageDrawable(context?.getDrawable(R.drawable.ic_star_border))
+                lastItem = item
+                Snackbar.make(requireView(), "${item.user.name} removed from favourites", Snackbar.LENGTH_LONG)
+                    .setAction("Undo"){
+                        lifecycleScope.launch(Dispatchers.Main){
+                            item.liked_by_user = true
+                            database.favouriteDao().insertImage(item)
+                            v.setImageDrawable(context?.getDrawable(R.drawable.ic_star_filled))
+                        }
+                    }.show()
             }
         }
     }

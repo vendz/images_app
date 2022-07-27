@@ -23,6 +23,7 @@ import cf.vandit.imagesapp.adapters.ItemAdapter
 import cf.vandit.imagesapp.database.FavouriteDatabase
 import cf.vandit.imagesapp.databinding.FragmentFavouritesBinding
 import cf.vandit.imagesapp.network.ImageData
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -31,6 +32,8 @@ class FavouritesFragment : Fragment(), ItemOnClickListener {
     lateinit var binding: FragmentFavouritesBinding
 
     lateinit var images: List<ImageData>
+    lateinit var lastItem: ImageData
+
 //    private val adapter = ItemAdapter(requireContext()).also { it.setCallback(this) }
     private lateinit var adapter: ItemAdapter
     private val handler = Handler()
@@ -111,5 +114,15 @@ class FavouritesFragment : Fragment(), ItemOnClickListener {
 
         v.setImageDrawable(context?.getDrawable(R.drawable.ic_star_border))
         item.liked_by_user = false
+
+        lastItem = item
+        Snackbar.make(requireView(), "${item.user.name} removed from favourites", Snackbar.LENGTH_LONG)
+            .setAction("Undo"){
+                lifecycleScope.launch(Dispatchers.Main){
+                    item.liked_by_user = true
+                    database.favouriteDao().insertImage(item)
+                    v.setImageDrawable(context?.getDrawable(R.drawable.ic_star_filled))
+                }
+            }.show()
     }
 }
