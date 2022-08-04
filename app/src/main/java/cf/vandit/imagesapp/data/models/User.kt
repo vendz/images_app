@@ -1,4 +1,4 @@
-package cf.vandit.imagesapp.network
+package cf.vandit.imagesapp.data.models
 
 data class User(
     val accepted_tos: Boolean,

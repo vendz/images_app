@@ -1,4 +1,4 @@
-package cf.vandit.imagesapp.database
+package cf.vandit.imagesapp.data.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

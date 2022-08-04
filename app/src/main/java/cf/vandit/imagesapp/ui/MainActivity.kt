@@ -1,4 +1,4 @@
-package cf.vandit.imagesapp
+package cf.vandit.imagesapp.ui
 
 import android.os.Bundle
 import android.view.Menu

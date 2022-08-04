@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import cf.vandit.imagesapp.ItemOnClickListener
+import cf.vandit.imagesapp.utils.ItemOnClickListener
 import cf.vandit.imagesapp.R
-import cf.vandit.imagesapp.database.FavouriteDatabase
+import cf.vandit.imagesapp.data.database.FavouriteDatabase
 import cf.vandit.imagesapp.databinding.ItemViewBinding
-import cf.vandit.imagesapp.network.ImageData
+import cf.vandit.imagesapp.data.models.ImageData
 import com.bumptech.glide.Glide
 
 class ItemAdapter(val context: Context): ListAdapter<ImageData, ItemAdapter.ItemViewHolder>(DiffUtil()) {

@@ -1,7 +1,7 @@
-package cf.vandit.imagesapp.database
+package cf.vandit.imagesapp.data.database
 
 import androidx.room.*
-import cf.vandit.imagesapp.network.ImageData
+import cf.vandit.imagesapp.data.models.ImageData
 
 @Dao
 interface FavouriteDao {

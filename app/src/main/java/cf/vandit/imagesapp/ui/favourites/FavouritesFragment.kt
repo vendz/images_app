@@ -1,4 +1,4 @@
-package cf.vandit.imagesapp.fragments
+package cf.vandit.imagesapp.ui.favourites
 
 import android.os.Bundle
 import android.os.Handler
@@ -17,12 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
-import cf.vandit.imagesapp.ItemOnClickListener
+import cf.vandit.imagesapp.utils.ItemOnClickListener
 import cf.vandit.imagesapp.R
 import cf.vandit.imagesapp.adapters.ItemAdapter
-import cf.vandit.imagesapp.database.FavouriteDatabase
+import cf.vandit.imagesapp.data.database.FavouriteDatabase
 import cf.vandit.imagesapp.databinding.FragmentFavouritesBinding
-import cf.vandit.imagesapp.network.ImageData
+import cf.vandit.imagesapp.data.models.ImageData
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

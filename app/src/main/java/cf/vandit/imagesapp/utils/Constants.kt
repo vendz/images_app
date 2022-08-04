@@ -1,4 +1,4 @@
-package cf.vandit.imagesapp
+package cf.vandit.imagesapp.utils
 
 class Constants {
     companion object {

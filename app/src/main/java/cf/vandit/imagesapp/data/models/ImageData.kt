@@ -1,4 +1,4 @@
-package cf.vandit.imagesapp.network
+package cf.vandit.imagesapp.data.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -36,17 +36,17 @@ class ImageDataTypeConverter{
     }
 
     @TypeConverter
-    fun stringToUrls(string:String):Urls{
-        return Gson().fromJson(string,Urls::class.java)
+    fun stringToUrls(string:String): Urls {
+        return Gson().fromJson(string, Urls::class.java)
     }
 
     @TypeConverter
-    fun userToString(user:User):String{
+    fun userToString(user: User):String{
         return Gson().toJson(user).toString()
     }
 
     @TypeConverter
-    fun stringToUser(string:String):User{
-        return Gson().fromJson(string,User::class.java)
+    fun stringToUser(string:String): User {
+        return Gson().fromJson(string, User::class.java)
     }
 }
