@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +18,7 @@ import cf.vandit.imagesapp.databinding.ItemViewBinding
 import cf.vandit.imagesapp.data.models.ImageData
 import com.bumptech.glide.Glide
 
-class ItemAdapter(val context: Context): ListAdapter<ImageData, ItemAdapter.ItemViewHolder>(DiffUtil()) {
+class ItemAdapter: ListAdapter<ImageData, ItemAdapter.ItemViewHolder>(DiffUtil()) {
     private lateinit var database: RoomDatabase
     private lateinit var callback: ItemOnClickListener
 
@@ -52,9 +53,9 @@ class ItemAdapter(val context: Context): ListAdapter<ImageData, ItemAdapter.Item
             binding.callback = callback
 
             if(item.liked_by_user == true) {
-                binding.itemFavBtn.setImageDrawable(context.getDrawable(R.drawable.ic_star_filled))
+                binding.itemFavBtn.setImageDrawable(ContextCompat.getDrawable(binding.root.context, R.drawable.ic_star_filled))
             } else {
-                binding.itemFavBtn.setImageDrawable(context.getDrawable(R.drawable.ic_star_border))
+                binding.itemFavBtn.setImageDrawable(ContextCompat.getDrawable(binding.root.context, R.drawable.ic_star_border))
             }
         }
     }

@@ -10,7 +10,9 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import cf.vandit.imagesapp.R
 import cf.vandit.imagesapp.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     lateinit var navController: NavController
@@ -33,7 +35,11 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.search -> Toast.makeText(this, "Search Clicked!", Toast.LENGTH_SHORT).show()
-            R.id.list -> navController.navigate(R.id.action_mainFragment_to_favouritesFragment)
+            R.id.favourites -> {
+                if(navController.currentDestination?.id != R.id.favouritesFragment) {
+                    navController.navigate(R.id.action_mainFragment_to_favouritesFragment)
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
     }

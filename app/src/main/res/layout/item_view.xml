@@ -49,6 +49,7 @@
                     android:layout_weight="20"
                     android:text="@{listItem.user.name}"
                     android:textAppearance="@style/heading_1"
+                    android:textColor="@color/text_color"
                     android:layout_gravity="center" />
 
                 <ImageButton
@@ -71,6 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_5"
                 android:text="@{listItem.user.location}"
+                android:textColor="@color/text_color"
                 android:textAppearance="@style/address_1" />
 
             <TextView
@@ -83,6 +85,7 @@
                 android:ellipsize="end"
                 android:maxLines="3"
                 android:text="@{listItem.user.bio}"
+                android:textColor="@color/text_color"
                 android:textAppearance="@style/desc_1" />
 
         </LinearLayout>

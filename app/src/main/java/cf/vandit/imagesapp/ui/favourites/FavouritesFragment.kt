@@ -1,7 +1,6 @@
 package cf.vandit.imagesapp.ui.favourites
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -10,34 +9,26 @@ import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
-import cf.vandit.imagesapp.utils.ItemOnClickListener
 import cf.vandit.imagesapp.R
 import cf.vandit.imagesapp.adapters.ItemAdapter
-import cf.vandit.imagesapp.data.database.FavouriteDatabase
-import cf.vandit.imagesapp.databinding.FragmentFavouritesBinding
 import cf.vandit.imagesapp.data.models.ImageData
+import cf.vandit.imagesapp.databinding.FragmentFavouritesBinding
+import cf.vandit.imagesapp.utils.ItemOnClickListener
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class FavouritesFragment : Fragment(), ItemOnClickListener {
 
     lateinit var binding: FragmentFavouritesBinding
-
-    lateinit var images: List<ImageData>
-    lateinit var lastItem: ImageData
-
-//    private val adapter = ItemAdapter(requireContext()).also { it.setCallback(this) }
+    private lateinit var viewmodel: FavouritesViewModel
+    private var images = mutableListOf<ImageData>()
     private lateinit var adapter: ItemAdapter
-    private val handler = Handler()
-
+    private lateinit var layoutManager: LinearLayoutManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,23 +40,26 @@ class FavouritesFragment : Fragment(), ItemOnClickListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (activity as AppCompatActivity).supportActionBar?.title ="Favourites"
+        (activity as AppCompatActivity).supportActionBar?.title = "Favourites"
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        adapter = ItemAdapter(requireContext()).also { it.setCallback(this) }
+        viewmodel = ViewModelProvider(requireActivity())[FavouritesViewModel::class.java]
+
+        adapter = ItemAdapter().also { it.setCallback(this) }
         binding.favRecView.adapter = adapter
 
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(binding.favRecView)
 
-        val layoutManager = LinearLayoutManager(requireContext())
+        layoutManager = LinearLayoutManager(requireContext())
         binding.favRecView.layoutManager = layoutManager
 
-        binding.favRecView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+        binding.favRecView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                val indexRv = (binding.favRecView.layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()
-                if(indexRv!=0){
+                val indexRv =
+                    (binding.favRecView.layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()
+                if (indexRv != 0) {
                     binding.scrollToTopBtn.visibility = View.VISIBLE
                 } else {
                     binding.scrollToTopBtn.visibility = View.GONE
@@ -73,22 +67,26 @@ class FavouritesFragment : Fragment(), ItemOnClickListener {
             }
         })
 
-        binding.scrollToTopBtn.setOnClickListener{
+        binding.scrollToTopBtn.setOnClickListener {
             binding.favRecView.smoothScrollToPosition(0)
-            binding.favRecView.smoothScrollBy(5,0)
+            binding.favRecView.smoothScrollBy(5, 0)
         }
 
-        lifecycleScope.launch(Dispatchers.IO){
-            getImages()
+        viewmodel.result.observe(viewLifecycleOwner) {
+            images = it.reversed().toMutableList()
+            adapter.submitList(images)
 
-            val monitor = Runnable {
-                if(images.isEmpty()){
-                    binding.favRecView.visibility = View.GONE
-                    binding.emptyFavTv.visibility = View.VISIBLE
-                    binding.animationView.visibility = View.VISIBLE
-                }
+            // TODO: implement scroll to top here as user have to manually scoll to top to see the last updated item
+
+            if (images.isEmpty()) {
+                binding.favRecView.visibility = View.GONE
+                binding.emptyFavTv.visibility = View.VISIBLE
+                binding.animationView.visibility = View.VISIBLE
+            } else {
+                binding.favRecView.visibility = View.VISIBLE
+                binding.emptyFavTv.visibility = View.GONE
+                binding.animationView.visibility = View.GONE
             }
-            handler.postDelayed(monitor, 0)
         }
     }
 
@@ -97,32 +95,14 @@ class FavouritesFragment : Fragment(), ItemOnClickListener {
                 || super.onOptionsItemSelected(item)
     }
 
-    private fun getImages(){
-        val database = Room.databaseBuilder(requireContext(), FavouriteDatabase::class.java, "favouriteDB").build()
-        images = database.favouriteDao().getAllImages()
-        val monitor = Runnable {
-            adapter.submitList(images)
-        }
-        handler.postDelayed(monitor, 0)
-    }
-
     override fun onClick(item: ImageData, v: ImageButton) {
-        val database = Room.databaseBuilder(requireContext(), FavouriteDatabase::class.java, "favouriteDB").build()
-        lifecycleScope.launch {
-            database.favouriteDao().deleteImage(item)
-        }
-
+        viewmodel.deleteImage(item)
         v.setImageDrawable(context?.getDrawable(R.drawable.ic_star_border))
-        item.liked_by_user = false
 
-        lastItem = item
         Snackbar.make(requireView(), "${item.user.name} removed from favourites", Snackbar.LENGTH_LONG)
             .setAction("Undo"){
-                lifecycleScope.launch(Dispatchers.Main){
-                    item.liked_by_user = true
-                    database.favouriteDao().insertImage(item)
-                    v.setImageDrawable(context?.getDrawable(R.drawable.ic_star_filled))
-                }
+                viewmodel.insertImage(item)
+                v.setImageDrawable(context?.getDrawable(R.drawable.ic_star_filled))
             }.show()
     }
 }
