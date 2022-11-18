@@ -1,6 +1,5 @@
 package cf.vandit.imagesapp.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageButton
@@ -11,11 +10,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import cf.vandit.imagesapp.utils.ItemOnClickListener
 import cf.vandit.imagesapp.R
 import cf.vandit.imagesapp.data.database.FavouriteDatabase
-import cf.vandit.imagesapp.databinding.ItemViewBinding
 import cf.vandit.imagesapp.data.models.ImageData
+import cf.vandit.imagesapp.databinding.ItemViewBinding
+import cf.vandit.imagesapp.utils.ItemOnClickListener
 import com.bumptech.glide.Glide
 
 class ItemAdapter: ListAdapter<ImageData, ItemAdapter.ItemViewHolder>(DiffUtil()) {
