@@ -19,11 +19,11 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="address_1" parent="TextAppearance.MaterialComponents.Body1">
+    <style name="address_1" parent="TextAppearance.MaterialComponents.Subtitle2">
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="desc_1" parent="TextAppearance.MaterialComponents.Subtitle1">
-        <item name="android:textSize">16sp</item>
+    <style name="desc_1" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textSize">14sp</item>
     </style>
 </resources>
